@@ -42,7 +42,7 @@ $ ./install-operator.sh
 ```
 $ kubectl get pods 
 NAME                                 READY   STATUS    RESTARTS   AGE
-rocketmq-operator-6cb8f7d6c4-79m2j   1/1     Running   0          102s
+rocketmq-operator-6cb8f7d6c4-79m2j   1/1     Running   0          102m
 ```
 ### Prepare Volume Persistence
 Before RocketMQ deployment, you may need to do some preparation steps for RocketMQ data persistence.
@@ -93,7 +93,7 @@ If you choose NFS as the storage mode, the first step is to prepare a storage cl
     ```
     $ ls -ls /data/k8s/
     total 4
-    4 -rw-r--r--. 1 root root 4 Jun 30 21:50 test.txt
+    4 -rw-r--r--. 1 root root 4 Jun 30 15:50 test.txt
     ```
 2. Modify the following configurations of the `deploy/storage/nfs/nfs-client.yaml` file:
 ```
@@ -120,7 +120,7 @@ $ ./deploy-storage-class.sh
 $ kubectl get pods
 NAME                                      READY   STATUS    RESTARTS   AGE
 nfs-client-provisioner-7758ff457c-mszgc   1/1     Running   0          136m
-rocketmq-operator-6cb8f7d6c4-79m2j        1/1     Running   0          102s
+rocketmq-operator-6cb8f7d6c4-79m2j        1/1     Running   0          112m
 ```
 ### Define Your RocketMQ Cluster
 
@@ -169,11 +169,11 @@ Check the status:
 ```
 $ kubectl get svc -owide
 NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE   SELECTOR
-name-service                ClusterIP   None             <none>        9876/TCP            26h   app=name-service
+name-service                ClusterIP   None             <none>        9876/TCP            2m    app=name-service
 $ kubectl get pods -owide
 NAME                                 READY   STATUS    RESTARTS   AGE    IP             NODE     NOMINATED NODE   READINESS GATES
-name-service-0                       1/1     Running   0          163m   10.244.8.246   k8s-06   <none>          <none>
-name-service-1                       1/1     Running   0          26h    10.244.2.58    k8s-03   <none>           <none>
+name-service-0                       1/1     Running   0          3m     10.244.8.246   k8s-06   <none>          <none>
+name-service-1                       1/1     Running   0          3m     10.244.2.58    k8s-03   <none>           <none>
 rocketmq-operator-6cb8f7d6c4-79m2j   1/1     Running   0          172m   10.244.8.245   k8s-06   <none>           <none>
 ```
 2. Deploy the RocketMQ broker clusters by running:
@@ -186,28 +186,28 @@ After a while the Broker Containers will be created, the Kubernetes clusters sta
 ``` 
 $ kubectl get pods -owide
 NAME                                 READY   STATUS    RESTARTS   AGE    IP             NODE     NOMINATED NODE   READINESS GATES
-broker-0-master-0                    1/1     Running   0          171m   10.244.2.60    k8s-03   <none>           <none>
-broker-0-replica-1-0                 1/1     Running   0          26h    10.244.8.242   k8s-06   <none>           <none>
-broker-1-master-0                    1/1     Running   0          26h    10.244.4.195   k8s-07   <none>           <none>
-broker-1-replica-1-0                 1/1     Running   0          173m   10.244.6.133   k8s-08   <none>           <none>
-broker-2-master-0                    1/1     Running   0          175m   10.244.3.33    k8s-05   <none>           <none>
-broker-2-replica-1-0                 1/1     Running   0          175m   10.244.8.244   k8s-06   <none>           <none>
-name-service-0                       1/1     Running   0          163m   10.244.8.246   k8s-06   <none>           <none>
-name-service-1                       1/1     Running   0          26h    10.244.2.58    k8s-03   <none>           <none>
-rocketmq-operator-6cb8f7d6c4-79m2j   1/1     Running   0          172m   10.244.8.245   k8s-06   <none>           <none>
+broker-0-master-0                    1/1     Running   0          10m    10.244.2.60    k8s-03   <none>           <none>
+broker-0-replica-1-0                 1/1     Running   0          10m    10.244.8.242   k8s-06   <none>           <none>
+broker-1-master-0                    1/1     Running   0          12m    10.244.4.195   k8s-07   <none>           <none>
+broker-1-replica-1-0                 1/1     Running   0          10m    10.244.6.133   k8s-08   <none>           <none>
+broker-2-master-0                    1/1     Running   0          10m    10.244.3.33    k8s-05   <none>           <none>
+broker-2-replica-1-0                 1/1     Running   0          10m    10.244.8.244   k8s-06   <none>           <none>
+name-service-0                       1/1     Running   0          16m    10.244.8.246   k8s-06   <none>           <none>
+name-service-1                       1/1     Running   0          16m    10.244.2.58    k8s-03   <none>           <none>
+rocketmq-operator-6cb8f7d6c4-79m2j   1/1     Running   0          185m   10.244.8.245   k8s-06   <none>           <none>
 ```
 3. Check the PV and PVC status:
 ```
 $ kubectl get pvc
 NAME                                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          AGE
-broker-storage-broker-0-master-0      Bound    pvc-82b9f743-3d35-492e-b02b-461fe4a4de17   15Gi       RWO            managed-nfs-storage   15d
-broker-storage-broker-0-replica-1-0   Bound    pvc-d63d9bf1-b360-4e8d-b9ae-d218edbab5b8   15Gi       RWO            managed-nfs-storage   15d
-broker-storage-broker-1-master-0      Bound    pvc-f8b7dc0c-37d8-4b54-a588-087465b24fc4   15Gi       RWO            managed-nfs-storage   15d
-broker-storage-broker-1-replica-1-0   Bound    pvc-6258e872-7867-4263-8c62-e26e914ad98a   15Gi       RWO            managed-nfs-storage   15d
-broker-storage-broker-2-master-0      Bound    pvc-3d938881-d7bc-44c1-acaa-89532fe9ec28   15Gi       RWO            managed-nfs-storage   15d
-broker-storage-broker-2-replica-1-0   Bound    pvc-866bde15-4efb-4361-bf5e-40d710be57c2   15Gi       RWO            managed-nfs-storage   15d
-namesrv-storage-name-service-0        Bound    pvc-b6cbaa8a-5bc8-4cf4-b32c-cdcd443d60d8   5Gi        RWO            managed-nfs-storage   18d
-namesrv-storage-name-service-1        Bound    pvc-b64dc012-f2a6-4230-a4dd-09fad6c68e67   5Gi        RWO            managed-nfs-storage   18d
+broker-storage-broker-0-master-0      Bound    pvc-82b9f743-3d35-492e-b02b-461fe4a4de17   15Gi       RWO            managed-nfs-storage   15m
+broker-storage-broker-0-replica-1-0   Bound    pvc-d63d9bf1-b360-4e8d-b9ae-d218edbab5b8   15Gi       RWO            managed-nfs-storage   15m
+broker-storage-broker-1-master-0      Bound    pvc-f8b7dc0c-37d8-4b54-a588-087465b24fc4   15Gi       RWO            managed-nfs-storage   15m
+broker-storage-broker-1-replica-1-0   Bound    pvc-6258e872-7867-4263-8c62-e26e914ad98a   15Gi       RWO            managed-nfs-storage   15m
+broker-storage-broker-2-master-0      Bound    pvc-3d938881-d7bc-44c1-acaa-89532fe9ec28   15Gi       RWO            managed-nfs-storage   15m
+broker-storage-broker-2-replica-1-0   Bound    pvc-866bde15-4efb-4361-bf5e-40d710be57c2   15Gi       RWO            managed-nfs-storage   15m
+namesrv-storage-name-service-0        Bound    pvc-b6cbaa8a-5bc8-4cf4-b32c-cdcd443d60d8   5Gi        RWO            managed-nfs-storage   22m
+namesrv-storage-name-service-1        Bound    pvc-b64dc012-f2a6-4230-a4dd-09fad6c68e67   5Gi        RWO            managed-nfs-storage   22m
 ```
 > Notice: if you don't choose the NFS storage mode, then the above PV and PVC won't be created.
 
