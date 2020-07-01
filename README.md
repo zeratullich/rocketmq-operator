@@ -3,7 +3,7 @@
 + Forked by [Apache RocketMQ Operator](https://github.com/apache/rocketmq-operator) .
 + Change 60% of the source code and fix code bugs(
 Fix the problem that the broker only can be increased and cannot be reduced sizes.) .
-+ Change use Service instead of node address .
++ Change use service(svc) instead of node address .
 + Can only be used in k8s cluster .
 ## Quick Start
 ### Deploy RocketMQ Operator
@@ -12,7 +12,29 @@ Fix the problem that the broker only can be increased and cannot be reduced size
 $ git clone https://github.com/zeratullich/rocketmq-operator
 $ cd rocketmq-operator 
 ```
-2. To deploy the RocketMQ Operator on your Kubernetes cluster, please run the following script:
+2. Create namespace:
+```
+$ kubectl create ns rocketmq
+```
+Need use the plugin [kubectx](https://github.com/ahmetb/kubectx/) to complete the following commands:
+```
+$ kubectl ns rocketmq
+```
+Or edit file in `~/.kube/config` change the namespace's value , for example:
+```
+...
+contexts:
+- context:
+    cluster: kubernetes
+    namespace: rocketmq
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+kind: Config
+preferences: {}
+...
+```
+3. To deploy the RocketMQ Operator on your Kubernetes cluster, please run the following script:
 ```
 $ kubectl create ns rocketmq
 $ kubectl ns rocketmq
@@ -52,7 +74,7 @@ You may refer to the instructions in the script for more information.
 #### Prepare Storage Class of NFS
 If you choose NFS as the storage mode, the first step is to prepare a storage class based on NFS provider to create PV and PVC where the RocketMQ data will be stored.
 
-1. Deploy NFS server and clients on your Kubernetes cluster. Please make sure they are functional before you go to the next step. Here is a instruction on how to verify NFS service.
+1. Deploy NFS server and clients on your Kubernetes cluster.You can refer to [NFS deployment document](docs/nfs_install_en.md) for more details Please make sure they are functional before you go to the next step. Here is a instruction on how to verify NFS service.
 
     1) On your NFS client node, check if NFS shared dir exists.
     ```
@@ -73,7 +95,7 @@ If you choose NFS as the storage mode, the first step is to prepare a storage cl
     ```
     $ ls -ls /data/k8s/
     total 4
-    4 -rw-r--r--. 1 root root 4 Jul 10 21:50 test.txt
+    4 -rw-r--r--. 1 root root 4 Jun 30 21:50 test.txt
     ```
 2. Modify the following configurations of the `deploy/storage/nfs/nfs-client.yaml` file:
 ```
@@ -219,6 +241,16 @@ It is often the case that with the development of your business, the old broker 
 kubectl apply -f example/rocketmq.zeratullich.org_v1beta1_broker_cr.yaml
 ```
 Then a new broker group of pods will be deployed and meanwhile the operator will copy the metadata from the source broker pod to the newly created broker pods before the new brokers are stared, so the new brokers will reload previous topic and subscription information.
+## Instructions For Use
+If services or apps want to use Rocketmq Operator Cluster, then the following address format should be set in the configuration file:
+```
+{statefulSetName}.{namespace}.svc.cluster.local
+```
+In example `statefulSetName` is `name-service` , `namespace` is `rocketmq`, so configuration file should be set:
+```
+name-service.rocketmq.svc.cluster.local
+```
+Then , you can use RocketMQ Cluster in k8s .
 ## Clean the Environment
 If you want to tear down the RocketMQ cluster, to remove the broker clusters run
 ```
