@@ -34,13 +34,11 @@ kind: Config
 preferences: {}
 ...
 ```
-3. To deploy the RocketMQ Operator on your Kubernetes cluster, please run the following script:
+4. To deploy the RocketMQ Operator on your Kubernetes cluster, please run the following script:
 ```
-$ kubectl create ns rocketmq
-$ kubectl ns rocketmq
 $ ./install-operator.sh
 ```
-3. Use command `kubectl get pods` to check the RocketMQ Operator deploy status like:
+5. Use command `kubectl get pods` to check the RocketMQ Operator deploy status like:
 ```
 $ kubectl get pods 
 NAME                                 READY   STATUS    RESTARTS   AGE
