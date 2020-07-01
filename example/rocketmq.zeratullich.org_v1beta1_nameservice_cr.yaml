@@ -1,0 +1,28 @@
+apiVersion: rocketmq.zeratullich.org/v1beta1
+kind: NameService
+metadata:
+  #name: example-nameservice
+  name: name-service
+spec:
+  # Add fields here
+  size: 2
+  # nameServiceImage is the customized docker image repo of the RocketMQ name service
+  #nameServiceImage: harbor.myquanwei.com/library/rocketmq-namesrv:4.5.2-alpine 
+  nameServiceImage: zeratullich/rocketmq-namesrv:4.5.2-alpine 
+  # imagePullPolicy is the image pull policy
+  imagePullPolicy: Always
+  # storageMode can be EmptyDir, HostPath, NFS
+  storageMode: NFS
+  # hostPath is the local path to store data
+  hostPath: /data/rocketmq/nameserver
+  # volumeClaimTemplates defines the storageClass
+  volumeClaimTemplates:
+    - metadata:
+        name: namesrv-storage
+        annotations:
+          volume.beta.kubernetes.io/storage-class: managed-nfs-storage
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 5Gi
