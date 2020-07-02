@@ -421,9 +421,7 @@ func (r *ReconcileBroker) getBrokerStatefulSet(broker *rocketmqv1beta1.Broker, b
 			VolumeClaimTemplates: getVolumeClaimTemplates(broker),
 		},
 	}
-
 	return dep
-
 }
 
 func getVolumeClaimTemplates(broker *rocketmqv1beta1.Broker) []corev1.PersistentVolumeClaim {

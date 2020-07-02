@@ -270,12 +270,11 @@ $ ./remove-storage-class.sh
 > Note: the NFS and HostPath persistence data will not be deleted by default.
 ## Development
 ### Prerequisites
-+ [git](https://git-scm.com/downloads)
-+ [go](https://golang.org/dl/) version v1.13+.
-+ [docker](https://docs.docker.com/install/) version 17.03+.
-+ Access to a Kubernetes v1.15.0+ cluster.
-+ [dep](https://golang.github.io/dep/docs/installation.html) version v0.5.0+.
-+ [operator-sdk](https://github.com/operator-framework/operator-sdk) version v0.15.2
++ Golang version: v1.13+
++ Docker version: 17.03+
++ Kubernetes version: v1.15.0
++ RocketMQ version: 4.5.2
++ Operator-sdk version: v0.15.2
 
 ### Build
 For developers who want to build and push the operator-related images to the docker hub, please follow the instructions below.
