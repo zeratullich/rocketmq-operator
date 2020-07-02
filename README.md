@@ -279,7 +279,7 @@ $ ./remove-storage-class.sh
 ### Build
 For developers who want to build and push the operator-related images to the docker hub, please follow the instructions below.
 #### Operator
-RocketMQ-Operator uses `operator-sdk` to generate the scaffolding and build the operator image. You can refer to the [operator-sdk user guide](https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md) for more details.
+RocketMQ-Operator uses `operator-sdk` to generate the scaffolding and build the operator image. You can refer to the [operator-sdk user guide](https://sdk.operatorframework.io/docs/golang/quickstart/) for more details.
 
 If you want to push the newly build operator image to your own docker hub, please modify the `DOCKERHUB_REPO` variable in the `create-operator.sh` script using your own repository. Then run the build script:
 ```
