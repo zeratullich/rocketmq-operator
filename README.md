@@ -114,6 +114,7 @@ Replace `192.168.0.250` and `/data/nfs/k8s` with your true NFS server IP address
 ```
 $ cd deploy/storage/nfs
 $ ./deploy-storage-class.sh
+$ cd  ../../../
 ```
 4. If the storage class is successfully deployed, you can get the pod status like:
 ```
@@ -161,7 +162,7 @@ spec:
 1. Deploy the RocketMQ name service cluster by running:
 
 ``` 
-$ kubectl apply -f rocketmq.zeratullich.org_v1beta1_nameservice_cr.yaml
+$ kubectl apply -f example/rocketmq.zeratullich.org_v1beta1_nameservice_cr.yaml
 nameservice.rocketmq.zeratullich.org/name-service created
 ```
 Check the status:
@@ -178,7 +179,7 @@ rocketmq-operator-6cb8f7d6c4-79m2j   1/1     Running   0          172m   10.244.
 ```
 2. Deploy the RocketMQ broker clusters by running:
 ```
-$ kubectl apply -f example/rocketmq_v1alpha1_broker_cr.yaml
+$ kubectl apply -f example/rocketmq.zeratullich.org_v1beta1_broker_cr.yaml
 broker.rocketmq.zeratullich.org/broker created 
 ```
 After a while the Broker Containers will be created, the Kubernetes clusters status should be like:
