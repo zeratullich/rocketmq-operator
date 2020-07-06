@@ -137,7 +137,7 @@ spec:
   # Add fields here
   size: 2
   # nameServiceImage is the customized docker image repo of the RocketMQ name service
-  nameServiceImage: harbor.myquanwei.com/library/rocketmq-namesrv:4.5.2-alpine 
+  nameServiceImage: zeratullich/rocketmq-namesrv:4.5.2-alpine 
   # imagePullPolicy is the image pull policy
   imagePullPolicy: Always
   # storageMode can be EmptyDir, HostPath, NFS
