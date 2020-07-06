@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	rocketmqv1beta1 "github.com/project/rocketmq-operator/pkg/apis/rocketmq/v1beta1"
-	cons "github.com/project/rocketmq-operator/pkg/constants"
-	"github.com/project/rocketmq-operator/pkg/controller/share"
+	rocketmqv1beta1 "github.com/zeratullich/rocketmq-operator/pkg/apis/rocketmq/v1beta1"
+	cons "github.com/zeratullich/rocketmq-operator/pkg/constants"
+	"github.com/zeratullich/rocketmq-operator/pkg/controller/share"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"

@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/project/rocketmq-operator/pkg/controller/nameservice"
+	"github.com/zeratullich/rocketmq-operator/pkg/controller/nameservice"
 )
 
 func init() {

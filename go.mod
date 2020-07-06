@@ -1,9 +1,8 @@
-module github.com/project/rocketmq-operator
+module github.com/zeratullich/rocketmq-operator
 
 go 1.13
 
 require (
-	github.com/apache/rocketmq-operator v0.0.0-20200108071544-bbff364db1c8 // indirect
 	github.com/operator-framework/operator-sdk v0.15.1
 	github.com/spf13/pflag v1.0.5
 	k8s.io/api v0.0.0

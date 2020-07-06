@@ -12,9 +12,9 @@ import (
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 	"k8s.io/client-go/rest"
 
-	"github.com/project/rocketmq-operator/pkg/apis"
-	"github.com/project/rocketmq-operator/pkg/controller"
-	"github.com/project/rocketmq-operator/version"
+	"github.com/zeratullich/rocketmq-operator/pkg/apis"
+	"github.com/zeratullich/rocketmq-operator/pkg/controller"
+	"github.com/zeratullich/rocketmq-operator/version"
 
 	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	kubemetrics "github.com/operator-framework/operator-sdk/pkg/kube-metrics"
