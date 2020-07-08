@@ -145,6 +145,10 @@ spec:
   storageMode: NFS
   # hostPath is the local path to store data
   hostPath: /data/rocketmq/nameserver
+  # set java options
+  xms: 512m
+  xmn: 128m
+  xmx: 512m
   # volumeClaimTemplates defines the storageClass
   volumeClaimTemplates:
     - metadata:
