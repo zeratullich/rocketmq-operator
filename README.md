@@ -4,6 +4,7 @@
 + Change 60% of the source code and fix code bugs(
 Fix the problem that the broker only can be increased and cannot be reduced sizes.) .
 + Change use service(svc) instead of node address .
++ Can dynamically adjust jvm memory usage through configuration file .
 + Can only be used in k8s cluster .
 ## Quick Start
 ### Deploy RocketMQ Operator
