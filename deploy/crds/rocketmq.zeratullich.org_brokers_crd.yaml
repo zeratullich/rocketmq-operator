@@ -49,6 +49,24 @@ spec:
             replicationMode:
               description: ReplicationMode is SYNC or ASYNC
               type: string
+            resources:
+              description: Resources limits pod resource usage
+              properties:
+                limits:
+                  additionalProperties:
+                    type: string
+                  description: 'Limits describes the maximum amount of compute resources
+                    allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
+                  type: object
+                requests:
+                  additionalProperties:
+                    type: string
+                  description: 'Requests describes the minimum amount of compute resources
+                    required. If Requests is omitted for a container, it defaults
+                    to Limits if that is explicitly specified, otherwise to an implementation-defined
+                    value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
+                  type: object
+              type: object
             size:
               description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
                 Important: Run "operator-sdk generate k8s" to regenerate code after
@@ -257,6 +275,13 @@ spec:
                     type: object
                 type: object
               type: array
+            xmn:
+              type: string
+            xms:
+              type: string
+            xmx:
+              description: Java memory limits
+              type: string
           required:
           - allowRestart
           - brokerImage
@@ -266,6 +291,9 @@ spec:
           - size
           - storageMode
           - volumeClaimTemplates
+          - xmn
+          - xms
+          - xmx
           type: object
         status:
           description: BrokerStatus defines the observed state of Broker

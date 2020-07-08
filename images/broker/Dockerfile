@@ -45,7 +45,6 @@ WORKDIR  ${ROCKETMQ_HOME}
 RUN set -eux; \
     apk add --virtual .build-deps curl gnupg unzip; \
     curl https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip -o rocketmq.zip; \
-    #curl https://dist.apache.org/repos/dist/release/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip -o rocketmq.zip \
     unzip rocketmq.zip; \
 	mv rocketmq-all*/* . ; \
 	rmdir rocketmq-all* ; \
@@ -65,9 +64,6 @@ EXPOSE 10909 10911 10912
 RUN mv ${ROCKETMQ_HOME}/bin/runbroker-customize.sh ${ROCKETMQ_HOME}/bin/runbroker.sh \
  && chmod a+x ${ROCKETMQ_HOME}/bin/runbroker.sh \
  && chmod a+x ${ROCKETMQ_HOME}/bin/mqbroker
-
-# Export Java options
-RUN export JAVA_OPT=" -Duser.home=/opt"
 
 # Add ${JAVA_HOME}/lib/ext as java.ext.dirs
 RUN sed -i 's/${JAVA_HOME}\/jre\/lib\/ext/${JAVA_HOME}\/jre\/lib\/ext:${JAVA_HOME}\/lib\/ext/' ${ROCKETMQ_HOME}/bin/tools.sh

@@ -17,7 +17,7 @@ spec:
         - name: rocketmq-operator
           # Replace this with the built image name
           #image: harbor.myquanwei.com/library/rocketmq-operator:1.0.0
-          image: zeratullich/rocketmq-operator:1.0.0
+          image: zeratullich/rocketmq-operator:2.0.0
           command:
           - rocketmq-operator
           imagePullPolicy: Always

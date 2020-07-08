@@ -2,6 +2,7 @@ package nameservice
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -156,6 +157,17 @@ func (r *ReconcileNameService) Reconcile(request reconcile.Request) (reconcile.R
 		}
 	}
 
+	javaOpt := getJavaOpt(nameservice)
+	// Ensure the java_opt is the same as the spec
+	if dep.Spec.Template.Spec.Containers[0].Env[0].Value != javaOpt {
+		dep.Spec.Template.Spec.Containers[0].Env[0].Value = javaOpt
+		err = r.client.Update(context.TODO(), dep)
+		if err != nil {
+			reqLogger.Error(err, "Failed to update JAVA_OPT env of StatefulSet.", "StatefulSet.Namespace", dep.Namespace, "StatefulSet.Name", dep.Name)
+			return reconcile.Result{}, err
+		}
+	}
+
 	return r.updateNameServiceStatus(nameservice, request, true)
 }
 
@@ -267,6 +279,13 @@ func (r *ReconcileNameService) updateNameServiceStatus(nameService *rocketmqv1be
 	return reconcile.Result{}, nil
 }
 
+func getJavaOpt(nameService *rocketmqv1beta1.NameService) string {
+	xmx := nameService.Spec.Xmx
+	xms := nameService.Spec.Xms
+	xmn := nameService.Spec.Xmn
+	return fmt.Sprintf("-Xmx%s -Xmn%s -Xmn%s", xmx, xmn, xms)
+}
+
 func getVolumeClaimTemplates(nameService *rocketmqv1beta1.NameService) []corev1.PersistentVolumeClaim {
 	switch nameService.Spec.StorageMode {
 	case cons.StorageModeNFS:
@@ -371,6 +390,11 @@ func (r *ReconcileNameService) statefulSetForNameService(nameService *rocketmqv1
 							Name:      nameService.Spec.VolumeClaimTemplates[0].Name,
 							SubPath:   cons.LogSubPathName,
 						}},
+						Env: []corev1.EnvVar{{
+							Name:  cons.JavaOpt,
+							Value: getJavaOpt(nameService),
+						}},
+						Resources: nameService.Spec.Resources,
 					}},
 					Volumes: getVolumes(nameService),
 				},
@@ -378,6 +402,5 @@ func (r *ReconcileNameService) statefulSetForNameService(nameService *rocketmqv1
 			VolumeClaimTemplates: getVolumeClaimTemplates(nameService),
 		},
 	}
-
 	return dep
 }

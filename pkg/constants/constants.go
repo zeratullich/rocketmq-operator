@@ -1,6 +1,9 @@
 package constants
 
 const (
+	// JavaOpt is the optionals of java
+	JavaOpt = "JAVA_OPT"
+
 	// BrokerContainerName is the name of broker container
 	BrokerContainerName = "broker"
 

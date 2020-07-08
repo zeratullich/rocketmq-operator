@@ -5,7 +5,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
@@ -27,6 +26,12 @@ type NameServiceSpec struct {
 	HostPath string `json:"hostPath"`
 	// VolumeClaimTemplates defines the StorageClass
 	VolumeClaimTemplates []corev1.PersistentVolumeClaim `json:"volumeClaimTemplates"`
+	// Resources limits pod resource usage
+	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
+	// Java memory limits
+	Xmx string `json:"xmx"`
+	Xms string `json:"xms"`
+	Xmn string `json:"xmn"`
 }
 
 // NameServiceStatus defines the observed state of NameService

@@ -2,6 +2,7 @@ package broker
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -155,9 +156,11 @@ func (r *ReconcileBroker) Reconcile(request reconcile.Request) (reconcile.Result
 		}
 	}
 
-	// Check for name server scaling
+	javaOpt := getJavaOpt(broker)
+
+	// Check for name server status
 	if broker.Spec.AllowRestart {
-		// The following code will  restart all brokers to update NAMESRV_ADDR env if share.NameServersStr is changed
+		// The following code will restart all brokers to update NAMESRV_ADDR or JAVA_OPT env if they are changed
 		for brokerGroupIndex := 0; brokerGroupIndex < broker.Spec.Size; brokerGroupIndex++ {
 			brokerName := getBrokerName(broker, brokerGroupIndex)
 			// Update master broker
@@ -173,6 +176,17 @@ func (r *ReconcileBroker) Reconcile(request reconcile.Request) (reconcile.Result
 						reqLogger.Error(err, "Failed to update NAMESRV_ADDR of master broker "+brokerName, "StatefulSet.Namespace", masterDep.Namespace, "StatefulSet.Name", masterDep.Name)
 					} else {
 						reqLogger.Info("Successfully updated NAMESRV_ADDR of master broker "+brokerName, "StatefulSet.Namespace", masterDep.Namespace, "StatefulSet.Name", masterDep.Name)
+					}
+					time.Sleep(time.Duration(cons.RestartBrokerPodIntervalInSecond) * time.Second)
+				}
+
+				if masterDep.Spec.Template.Spec.Containers[0].Env[1].Value != javaOpt {
+					masterDep.Spec.Template.Spec.Containers[0].Env[1].Value = javaOpt
+					err = r.client.Update(context.TODO(), masterDep)
+					if err != nil {
+						reqLogger.Error(err, "Failed to update JAVA_OPT of master broker "+brokerName, "StatefulSet.Namespace", masterDep.Namespace, "StatefulSet.Name", masterDep.Name)
+					} else {
+						reqLogger.Info("Successfully updated JAVA_OPT of master broker "+brokerName, "StatefulSet.Namespace", masterDep.Namespace, "StatefulSet.Name", masterDep.Name)
 					}
 					time.Sleep(time.Duration(cons.RestartBrokerPodIntervalInSecond) * time.Second)
 				}
@@ -192,6 +206,17 @@ func (r *ReconcileBroker) Reconcile(request reconcile.Request) (reconcile.Result
 							reqLogger.Error(err, "Failed to update NAMESRV_ADDR of "+strconv.Itoa(brokerGroupIndex)+"-replica-"+strconv.Itoa(replicaIndex), "StatefulSet.Namespace", replicaDep.Namespace, "StatefulSet.Name", replicaDep.Name)
 						} else {
 							reqLogger.Info("Successfully updated NAMESRV_ADDR of "+strconv.Itoa(brokerGroupIndex)+"-replica-"+strconv.Itoa(replicaIndex), "StatefulSet.Namespace", replicaDep.Namespace, "StatefulSet.Name", replicaDep.Name)
+						}
+						time.Sleep(time.Duration(cons.RestartBrokerPodIntervalInSecond) * time.Second)
+					}
+
+					if replicaDep.Spec.Template.Spec.Containers[0].Env[1].Value != javaOpt {
+						replicaDep.Spec.Template.Spec.Containers[0].Env[1].Value = javaOpt
+						err = r.client.Update(context.TODO(), replicaDep)
+						if err != nil {
+							reqLogger.Error(err, "Failed to update JAVA_OPT of "+strconv.Itoa(brokerGroupIndex)+"-replica-"+strconv.Itoa(replicaIndex), "StatefulSet.Namespace", replicaDep.Namespace, "StatefulSet.Name", replicaDep.Name)
+						} else {
+							reqLogger.Info("Successfully updated JAVA_OPT of "+strconv.Itoa(brokerGroupIndex)+"-replica-"+strconv.Itoa(replicaIndex), "StatefulSet.Namespace", replicaDep.Namespace, "StatefulSet.Name", replicaDep.Name)
 						}
 						time.Sleep(time.Duration(cons.RestartBrokerPodIntervalInSecond) * time.Second)
 					}
@@ -379,22 +404,32 @@ func (r *ReconcileBroker) getBrokerStatefulSet(broker *rocketmqv1beta1.Broker, b
 						Image:           broker.Spec.BrokerImage,
 						Name:            cons.BrokerContainerName,
 						ImagePullPolicy: broker.Spec.ImagePullPolicy,
-						Env: []corev1.EnvVar{{
-							Name:  cons.EnvNameServiceAddress,
-							Value: nameServers,
-						}, {
-							Name:  cons.EnvReplicationMode,
-							Value: broker.Spec.ReplicationMode,
-						}, {
-							Name:  cons.EnvBrokerID,
-							Value: strconv.Itoa(replicaIndex),
-						}, {
-							Name:  cons.EnvBrokerClusterName,
-							Value: broker.Name + "-" + strconv.Itoa(brokerGroupIndex),
-						}, {
-							Name:  cons.EnvBrokerName,
-							Value: broker.Name + "-" + strconv.Itoa(brokerGroupIndex),
-						}},
+						Env: []corev1.EnvVar{
+							{
+								Name:  cons.EnvNameServiceAddress,
+								Value: nameServers,
+							},
+							{
+								Name:  cons.JavaOpt,
+								Value: getJavaOpt(broker),
+							},
+							{
+								Name:  cons.EnvReplicationMode,
+								Value: broker.Spec.ReplicationMode,
+							},
+							{
+								Name:  cons.EnvBrokerID,
+								Value: strconv.Itoa(replicaIndex),
+							},
+							{
+								Name:  cons.EnvBrokerClusterName,
+								Value: broker.Name + "-" + strconv.Itoa(brokerGroupIndex),
+							},
+							{
+								Name:  cons.EnvBrokerName,
+								Value: broker.Name + "-" + strconv.Itoa(brokerGroupIndex),
+							},
+						},
 						Ports: []corev1.ContainerPort{{
 							ContainerPort: cons.BrokerVipContainerPort,
 							Name:          cons.BrokerVipContainerPortName,
@@ -414,6 +449,7 @@ func (r *ReconcileBroker) getBrokerStatefulSet(broker *rocketmqv1beta1.Broker, b
 							Name:      broker.Spec.VolumeClaimTemplates[0].Name,
 							SubPath:   cons.StoreSubPathName + getPathSuffix(broker, brokerGroupIndex, replicaIndex),
 						}},
+						Resources: broker.Spec.Resources,
 					}},
 					Volumes: getVolumes(broker),
 				},
@@ -422,6 +458,13 @@ func (r *ReconcileBroker) getBrokerStatefulSet(broker *rocketmqv1beta1.Broker, b
 		},
 	}
 	return dep
+}
+
+func getJavaOpt(broker *rocketmqv1beta1.Broker) string {
+	xmx := broker.Spec.Xmx
+	xms := broker.Spec.Xms
+	xmn := broker.Spec.Xmn
+	return fmt.Sprintf("-Xmx%s -Xmn%s -Xmn%s", xmx, xmn, xms)
 }
 
 func getVolumeClaimTemplates(broker *rocketmqv1beta1.Broker) []corev1.PersistentVolumeClaim {

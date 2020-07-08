@@ -30,8 +30,14 @@ type BrokerSpec struct {
 	StorageMode string `json:"storageMode"`
 	// HostPath is the local path to store data
 	HostPath string `json:"hostPath"`
+	// Resources limits pod resource usage
+	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
 	// VolumeClaimTemplates defines the StorageClass
 	VolumeClaimTemplates []corev1.PersistentVolumeClaim `json:"volumeClaimTemplates"`
+	// Java memory limits
+	Xmx string `json:"xmx"`
+	Xms string `json:"xms"`
+	Xmn string `json:"xmn"`
 }
 
 // BrokerStatus defines the observed state of Broker

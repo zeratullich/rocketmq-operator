@@ -23,6 +23,10 @@ spec:
   storageMode: NFS
   # hostPath is the local path to store data
   hostPath: /data/rocketmq/broker
+  # set java options
+  xms: 1g
+  xmn: 256m
+  xmx: 1g
   # volumeClaimTemplates defines the storageClass
   volumeClaimTemplates:
     - metadata:
