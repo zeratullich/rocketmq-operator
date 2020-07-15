@@ -484,7 +484,7 @@ func getVolumes(broker *rocketmqv1beta1.Broker) []corev1.Volume {
 		return nil
 	case cons.StorageModeEmptyDir:
 		volumes := []corev1.Volume{{
-			Name: broker.Spec.VolumeClaimTemplates[0].Name,
+			Name: broker.Name,
 			VolumeSource: corev1.VolumeSource{
 				EmptyDir: &corev1.EmptyDirVolumeSource{}},
 		}}
@@ -493,7 +493,7 @@ func getVolumes(broker *rocketmqv1beta1.Broker) []corev1.Volume {
 		fallthrough
 	default:
 		volumes := []corev1.Volume{{
-			Name: broker.Spec.VolumeClaimTemplates[0].Name,
+			Name: broker.Name,
 			VolumeSource: corev1.VolumeSource{
 				HostPath: &corev1.HostPathVolumeSource{
 					Path: broker.Spec.HostPath,
