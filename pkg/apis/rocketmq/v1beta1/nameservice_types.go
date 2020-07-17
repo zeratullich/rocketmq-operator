@@ -25,7 +25,7 @@ type NameServiceSpec struct {
 	// HostPath is the local path to store data
 	HostPath string `json:"hostPath"`
 	// VolumeClaimTemplates defines the StorageClass
-	VolumeClaimTemplates []corev1.PersistentVolumeClaim `json:"volumeClaimTemplates"`
+	VolumeClaimTemplates []corev1.PersistentVolumeClaim `json:"volumeClaimTemplates,omitempty"`
 	// Resources limits pod resource usage
 	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
 	// Java memory limits

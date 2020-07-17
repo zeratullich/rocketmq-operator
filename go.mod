@@ -3,6 +3,7 @@ module github.com/zeratullich/rocketmq-operator
 go 1.13
 
 require (
+	github.com/gophercloud/gophercloud v0.2.0
 	github.com/operator-framework/operator-sdk v0.15.1
 	github.com/spf13/pflag v1.0.5
 	k8s.io/api v0.0.0

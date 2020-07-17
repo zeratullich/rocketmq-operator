@@ -10,7 +10,7 @@ spec:
   #replicationMode: ASYNC
   replicationMode: SYNC
   # replicaPerGroup is the number of each broker cluster
-  replicaPerGroup: 1
+  replicaPerGroup: 2
   # brokerImage is the customized docker image repo of the RocketMQ broker
   #brokerImage: harbor.myquanwei.com/library/rocketmq-broker:4.5.2-alpine
   brokerImage: zeratullich/rocketmq-broker:4.5.2-alpine
@@ -23,6 +23,14 @@ spec:
   storageMode: NFS
   # hostPath is the local path to store data
   hostPath: /data/rocketmq/broker
+  # resources limits
+  resources: 
+    requests:
+      cpu: 100m
+      memory: 1Gi
+    limits:
+      cpu: 200m
+      memory: 2Gi
   # set java options
   xms: 1g
   xmn: 256m
@@ -38,4 +46,5 @@ spec:
         resources:
           requests:
             storage: 15Gi
-
+      
+        

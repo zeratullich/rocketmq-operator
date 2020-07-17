@@ -33,7 +33,7 @@ type BrokerSpec struct {
 	// Resources limits pod resource usage
 	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
 	// VolumeClaimTemplates defines the StorageClass
-	VolumeClaimTemplates []corev1.PersistentVolumeClaim `json:"volumeClaimTemplates"`
+	VolumeClaimTemplates []corev1.PersistentVolumeClaim `json:"volumeClaimTemplates,omitempty"`
 	// Java memory limits
 	Xmx string `json:"xmx"`
 	Xms string `json:"xms"`

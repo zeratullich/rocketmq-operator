@@ -290,7 +290,6 @@ spec:
           - replicaPerGroup
           - size
           - storageMode
-          - volumeClaimTemplates
           - xmn
           - xms
           - xmx

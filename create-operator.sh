@@ -18,7 +18,7 @@
 set -eux;
 
 # You can change the DOCKERHUB_REPO to your docker repo for development purpose
-#DOCKERHUB_REPO="harbor.myquanwei.com/library/rocketmq-operator:1.0.0"
+#DOCKERHUB_REPO="harbor.myquanwei.com/library/rocketmq-operator:2.0.0"
 DOCKERHUB_REPO="zeratullich/rocketmq-operator:2.0.0"
 
 #export GO111MODULE=on

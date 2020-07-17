@@ -372,7 +372,14 @@ func (r *ReconcileBroker) getBrokerStatefulSet(broker *rocketmqv1beta1.Broker, b
 	}
 	statefulSetName = builder.String()
 
-	dep := &appsv1.StatefulSet{
+	var mountPathName string
+	if getVolumeClaimTemplates(broker) != nil {
+		mountPathName = broker.Spec.VolumeClaimTemplates[0].Name
+	} else {
+		mountPathName = broker.Name
+	}
+
+	sts := &appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      statefulSetName,
 			Namespace: broker.Namespace,
@@ -442,12 +449,12 @@ func (r *ReconcileBroker) getBrokerStatefulSet(broker *rocketmqv1beta1.Broker, b
 						}},
 						VolumeMounts: []corev1.VolumeMount{{
 							MountPath: cons.LogMountPath,
-							Name:      broker.Spec.VolumeClaimTemplates[0].Name,
-							SubPath:   cons.LogSubPathName + getPathSuffix(broker, brokerGroupIndex, replicaIndex),
+							Name:      mountPathName,
+							SubPath:   cons.LogSubPathName,
 						}, {
 							MountPath: cons.StoreMountPath,
-							Name:      broker.Spec.VolumeClaimTemplates[0].Name,
-							SubPath:   cons.StoreSubPathName + getPathSuffix(broker, brokerGroupIndex, replicaIndex),
+							Name:      mountPathName,
+							SubPath:   cons.StoreSubPathName,
 						}},
 						Resources: broker.Spec.Resources,
 					}},
@@ -457,7 +464,7 @@ func (r *ReconcileBroker) getBrokerStatefulSet(broker *rocketmqv1beta1.Broker, b
 			VolumeClaimTemplates: getVolumeClaimTemplates(broker),
 		},
 	}
-	return dep
+	return sts
 }
 
 func getJavaOpt(broker *rocketmqv1beta1.Broker) string {
@@ -501,25 +508,6 @@ func getVolumes(broker *rocketmqv1beta1.Broker) []corev1.Volume {
 		}}
 		return volumes
 	}
-}
-
-func getPathSuffix(broker *rocketmqv1beta1.Broker, brokerGroupIndex int, replicaIndex int) string {
-	var builder strings.Builder
-	if replicaIndex == 0 {
-		builder.WriteString("/")
-		builder.WriteString(broker.Name)
-		builder.WriteString("-")
-		builder.WriteString(strconv.Itoa(brokerGroupIndex))
-		builder.WriteString("-master")
-	} else {
-		builder.WriteString("/")
-		builder.WriteString(broker.Name)
-		builder.WriteString("-")
-		builder.WriteString(strconv.Itoa(brokerGroupIndex))
-		builder.WriteString("-replica-")
-		builder.WriteString(strconv.Itoa(replicaIndex))
-	}
-	return builder.String()
 }
 
 // labelsForBroker returns the labels for selecting the resources

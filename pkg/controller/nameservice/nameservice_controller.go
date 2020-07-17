@@ -157,8 +157,8 @@ func (r *ReconcileNameService) Reconcile(request reconcile.Request) (reconcile.R
 		}
 	}
 
-	javaOpt := getJavaOpt(nameservice)
 	// Ensure the java_opt is the same as the spec
+	javaOpt := getJavaOpt(nameservice)
 	if dep.Spec.Template.Spec.Containers[0].Env[0].Value != javaOpt {
 		dep.Spec.Template.Spec.Containers[0].Env[0].Value = javaOpt
 		err = r.client.Update(context.TODO(), dep)
@@ -303,7 +303,7 @@ func getVolumes(nameService *rocketmqv1beta1.NameService) []corev1.Volume {
 		return nil
 	case cons.StorageModeEmptyDir:
 		volumes := []corev1.Volume{{
-			Name: nameService.Spec.VolumeClaimTemplates[0].Name,
+			Name: nameService.Name,
 			VolumeSource: corev1.VolumeSource{
 				EmptyDir: &corev1.EmptyDirVolumeSource{}},
 		}}
@@ -312,7 +312,7 @@ func getVolumes(nameService *rocketmqv1beta1.NameService) []corev1.Volume {
 		fallthrough
 	default:
 		volumes := []corev1.Volume{{
-			Name: nameService.Spec.VolumeClaimTemplates[0].Name,
+			Name: nameService.Name,
 			VolumeSource: corev1.VolumeSource{
 				HostPath: &corev1.HostPathVolumeSource{
 					Path: nameService.Spec.HostPath,
@@ -350,7 +350,15 @@ func labelsForNameService(name string) map[string]string {
 
 func (r *ReconcileNameService) statefulSetForNameService(nameService *rocketmqv1beta1.NameService) *appsv1.StatefulSet {
 	ls := labelsForNameService(nameService.Name)
-	dep := &appsv1.StatefulSet{
+	var mountPathName string
+
+	if getVolumeClaimTemplates(nameService) != nil {
+		mountPathName = nameService.Spec.VolumeClaimTemplates[0].Name
+	} else {
+		mountPathName = nameService.Name
+	}
+
+	sts := &appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      nameService.Name,
 			Namespace: nameService.Namespace,
@@ -387,7 +395,7 @@ func (r *ReconcileNameService) statefulSetForNameService(nameService *rocketmqv1
 						}},
 						VolumeMounts: []corev1.VolumeMount{{
 							MountPath: cons.LogMountPath,
-							Name:      nameService.Spec.VolumeClaimTemplates[0].Name,
+							Name:      mountPathName,
 							SubPath:   cons.LogSubPathName,
 						}},
 						Env: []corev1.EnvVar{{
@@ -402,5 +410,5 @@ func (r *ReconcileNameService) statefulSetForNameService(nameService *rocketmqv1
 			VolumeClaimTemplates: getVolumeClaimTemplates(nameService),
 		},
 	}
-	return dep
+	return sts
 }

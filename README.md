@@ -143,24 +143,21 @@ spec:
   # imagePullPolicy is the image pull policy
   imagePullPolicy: Always
   # storageMode can be EmptyDir, HostPath, NFS
-  storageMode: NFS
+  storageMode: EmptyDir
   # hostPath is the local path to store data
   hostPath: /data/rocketmq/nameserver
+  # resource limits
+  resources: 
+    requests:
+      cpu: 200m
+      memory: 1Gi
+    limits:
+      cpu: 200m
+      memory: 1Gi
   # set java options
   xms: 512m
   xmn: 128m
   xmx: 512m
-  # volumeClaimTemplates defines the storageClass
-  volumeClaimTemplates:
-    - metadata:
-        name: namesrv-storage
-        annotations:
-          volume.beta.kubernetes.io/storage-class: managed-nfs-storage
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 5Gi
 ```
 ### Create RocketMQ Cluster
 
@@ -278,7 +275,7 @@ $ ./remove-storage-class.sh
 ### Prerequisites
 + Golang version: v1.13+
 + Docker version: 17.03+
-+ Kubernetes version: v1.15.0
++ Kubernetes version: v1.18.2
 + RocketMQ version: 4.5.2
 + Operator-sdk version: v0.15.2
 

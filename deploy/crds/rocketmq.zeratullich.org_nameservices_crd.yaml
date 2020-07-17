@@ -280,7 +280,6 @@ spec:
           - nameServiceImage
           - size
           - storageMode
-          - volumeClaimTemplates
           - xmn
           - xms
           - xmx
