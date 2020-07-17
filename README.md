@@ -295,10 +295,10 @@ You can also modify the `DOCKERHUB_REPO` variable in the scripts to push the new
 
 ```
 $ cd images/broker
-$ ./build-broker-image.sh
+$ ./build-broker-image.sh [version]
 ```
 ```
 $ cd images/namesrv
-$ ./build-namesrv-image.sh
+$ ./build-namesrv-image.sh [version]
 ```
 > Note: for users who just want to use the operator, there is no need to build the operator and customized broker and name server images themselves. Users can simply use the default official images which are maintained by the RocketMQ community. 
