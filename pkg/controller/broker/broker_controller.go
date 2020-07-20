@@ -355,7 +355,6 @@ func (r *ReconcileBroker) getBrokerStatefulSet(broker *rocketmqv1beta1.Broker, b
 	var builder strings.Builder
 	ls := labelsForBroker(broker.Name)
 	var a int32 = 1
-	var c = &a
 	var statefulSetName string
 	var nameServers = share.NameServersStr
 	if replicaIndex == 0 {
@@ -395,7 +394,7 @@ func (r *ReconcileBroker) getBrokerStatefulSet(broker *rocketmqv1beta1.Broker, b
 			},
 		},
 		Spec: appsv1.StatefulSetSpec{
-			Replicas: c,
+			Replicas: &a,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: ls,
 			},
@@ -430,11 +429,11 @@ func (r *ReconcileBroker) getBrokerStatefulSet(broker *rocketmqv1beta1.Broker, b
 							},
 							{
 								Name:  cons.EnvBrokerClusterName,
-								Value: broker.Name + "-" + strconv.Itoa(brokerGroupIndex),
+								Value: cons.BrokerClusterName,
 							},
 							{
 								Name:  cons.EnvBrokerName,
-								Value: broker.Name + "-" + strconv.Itoa(brokerGroupIndex),
+								Value: strings.Join([]string{broker.Name, strconv.Itoa(brokerGroupIndex)}, "-"),
 							},
 						},
 						Ports: []corev1.ContainerPort{{

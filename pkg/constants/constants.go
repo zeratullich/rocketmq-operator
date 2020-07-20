@@ -58,6 +58,9 @@ const (
 	// BrokerHighAvailabilityContainerPortName is the high availability port name of broker container
 	BrokerHighAvailabilityContainerPortName = "ha"
 
+	// BrokerClusterName is the cluster name of brokers
+	BrokerClusterName = "K8S-RocketMQ-Cluster"
+
 	// StorageModeNFS is the name of NFS storage mode
 	StorageModeNFS = "NFS"
 
