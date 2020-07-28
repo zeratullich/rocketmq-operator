@@ -23,6 +23,8 @@ spec:
   storageMode: NFS
   # hostPath is the local path to store data
   hostPath: /data/rocketmq/broker
+  # set broker cluster name
+  brokerClusterName: k8s-rocketmq-cluster
   # resources limits
   resources: 
     requests:
@@ -35,6 +37,19 @@ spec:
   xms: 1g
   xmn: 256m
   xmx: 1g
+  # affinity set
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: role
+                  operator: In
+                  values:
+                    - master
+            topologyKey: "kubernetes.io/hostname"
   # volumeClaimTemplates defines the storageClass
   volumeClaimTemplates:
     - metadata:
@@ -46,5 +61,3 @@ spec:
         resources:
           requests:
             storage: 15Gi
-      
-        

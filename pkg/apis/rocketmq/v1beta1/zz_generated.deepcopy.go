@@ -81,6 +81,7 @@ func (in *BrokerSpec) DeepCopyInto(out *BrokerSpec) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
+	in.Affinity.DeepCopyInto(&out.Affinity)
 	return
 }
 
@@ -187,6 +188,7 @@ func (in *NameServiceSpec) DeepCopyInto(out *NameServiceSpec) {
 		}
 	}
 	in.Resources.DeepCopyInto(&out.Resources)
+	in.Affinity.DeepCopyInto(&out.Affinity)
 	return
 }
 

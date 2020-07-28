@@ -28,10 +28,14 @@ type NameServiceSpec struct {
 	VolumeClaimTemplates []corev1.PersistentVolumeClaim `json:"volumeClaimTemplates,omitempty"`
 	// Resources limits pod resource usage
 	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
-	// Java memory limits
+	// Java memory limits Xmx
 	Xmx string `json:"xmx"`
+	// Java memory limits Xms
 	Xms string `json:"xms"`
+	// Java memory limits Xmn
 	Xmn string `json:"xmn"`
+	// Affinity is a group of affinity scheduling rules.
+	Affinity corev1.Affinity `json:"affinity,omitempty"`
 }
 
 // NameServiceStatus defines the observed state of NameService

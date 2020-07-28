@@ -158,6 +158,19 @@ spec:
   xms: 512m
   xmn: 128m
   xmx: 512m
+  # affinity set
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - name-service
+            topologyKey: "kubernetes.io/hostname"
 ```
 ### Create RocketMQ Cluster
 

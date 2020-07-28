@@ -385,6 +385,7 @@ func (r *ReconcileNameService) statefulSetForNameService(nameService *rocketmqv1
 				},
 				Spec: corev1.PodSpec{
 					DNSPolicy: "ClusterFirst",
+					Affinity:  &nameService.Spec.Affinity,
 					Containers: []corev1.Container{{
 						Image:           nameService.Spec.NameServiceImage,
 						Name:            nameService.Name,

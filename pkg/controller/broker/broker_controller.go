@@ -237,6 +237,7 @@ func (r *ReconcileBroker) Reconcile(request reconcile.Request) (reconcile.Result
 		reqLogger.Error(err, "Failed to list pods.", "Broker.Namespace", broker.Namespace, "Broker.Name", broker.Name)
 		return reconcile.Result{}, err
 	}
+
 	podNames := getPodNames(podList.Items)
 	log.Info("broker.Status.Nodes length = " + strconv.Itoa(len(broker.Status.Nodes)))
 	log.Info("podNames length = " + strconv.Itoa(len(podNames)))
@@ -353,23 +354,28 @@ func getBrokerName(broker *rocketmqv1beta1.Broker, brokerGroupIndex int) string 
 // getBrokerStatefulSet returns a broker StatefulSet object
 func (r *ReconcileBroker) getBrokerStatefulSet(broker *rocketmqv1beta1.Broker, brokerGroupIndex int, replicaIndex int) *appsv1.StatefulSet {
 	var builder strings.Builder
-	ls := labelsForBroker(broker.Name)
+	var role string
 	var a int32 = 1
 	var statefulSetName string
 	var nameServers = share.NameServersStr
 	if replicaIndex == 0 {
+		role = "master"
 		builder.WriteString(broker.Name)
 		builder.WriteString("-")
 		builder.WriteString(strconv.Itoa(brokerGroupIndex))
 		builder.WriteString("-master")
 	} else {
+		role = "slave"
 		builder.WriteString(broker.Name)
 		builder.WriteString("-")
 		builder.WriteString(strconv.Itoa(brokerGroupIndex))
 		builder.WriteString("-replica-")
 		builder.WriteString(strconv.Itoa(replicaIndex))
 	}
+
 	statefulSetName = builder.String()
+	ls := labelsForBroker(broker.Name)
+	ls["role"] = role
 
 	var mountPathName string
 	if getVolumeClaimTemplates(broker) != nil {
@@ -406,6 +412,7 @@ func (r *ReconcileBroker) getBrokerStatefulSet(broker *rocketmqv1beta1.Broker, b
 					Labels: ls,
 				},
 				Spec: corev1.PodSpec{
+					Affinity: &broker.Spec.Affinity,
 					Containers: []corev1.Container{{
 						Image:           broker.Spec.BrokerImage,
 						Name:            cons.BrokerContainerName,
@@ -429,7 +436,7 @@ func (r *ReconcileBroker) getBrokerStatefulSet(broker *rocketmqv1beta1.Broker, b
 							},
 							{
 								Name:  cons.EnvBrokerClusterName,
-								Value: cons.BrokerClusterName,
+								Value: broker.Spec.BrokerClusterName,
 							},
 							{
 								Name:  cons.EnvBrokerName,
@@ -512,7 +519,7 @@ func getVolumes(broker *rocketmqv1beta1.Broker) []corev1.Volume {
 // labelsForBroker returns the labels for selecting the resources
 // belonging to the given broker CR name.
 func labelsForBroker(name string) map[string]string {
-	return map[string]string{"app": "broker", "broker_cr": name}
+	return map[string]string{"app": name, "broker_cr": name}
 }
 
 // getPodNames returns the pod names of the array of pods passed in

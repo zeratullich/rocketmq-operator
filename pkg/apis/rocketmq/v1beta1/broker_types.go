@@ -34,10 +34,16 @@ type BrokerSpec struct {
 	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
 	// VolumeClaimTemplates defines the StorageClass
 	VolumeClaimTemplates []corev1.PersistentVolumeClaim `json:"volumeClaimTemplates,omitempty"`
-	// Java memory limits
+	// Java memory limits Xmx
 	Xmx string `json:"xmx"`
+	// Java memory limits Xms
 	Xms string `json:"xms"`
+	// Java memory limits Xmn
 	Xmn string `json:"xmn"`
+	// BrokerClusterName is the cluster name of brokers
+	BrokerClusterName string `json:"brokerClusterName"`
+	// Affinity is a group of affinity scheduling rules.
+	Affinity corev1.Affinity `json:"affinity,omitempty"`
 }
 
 // BrokerStatus defines the observed state of Broker
