@@ -48,11 +48,11 @@ rocketmq-operator-6cb8f7d6c4-79m2j   1/1     Running   0          102m
 ### Prepare Volume Persistence
 Before RocketMQ deployment, you may need to do some preparation steps for RocketMQ data persistence.
 
-Currently we provide several options for your RocketMQ data persistence: `EmptyDir`, `HostPath` and `NFS`, which can be configured in CR files, for example in `rocketmq.zeratullich.org_v1beta1_nameservice_cr.yaml`:
+Currently we provide several options for your RocketMQ data persistence: `EmptyDir`, `HostPath` and `StorageClass`, which can be configured in CR files, for example in `rocketmq.zeratullich.org_v1beta1_nameservice_cr.yaml`:
 ```
 ...
- # storageMode can be EmptyDir, HostPath, NFS
-  storageMode: NFS
+ # storageMode can be EmptyDir, HostPath, StorageClass(NFS Ceph GlusterFS)
+  storageMode: StorageClass
 ...
 ```
 If you choose `EmptyDir`, you don't need to do extra preparation steps for data persistence. But the data storage life is the same with the pod's life, if the pod is deleted you may lost the data.
@@ -64,13 +64,12 @@ This storage mode means the RocketMQ data (including all the logs and store file
 We provide a script in `deploy/storage/hostpath/prepare-host-path.sh`, which you can use to create the `HostPath` dir on every worker node of your Kubernetes cluster.
 ```
 $ cd deploy/storage/hostpath
-$ sudo su
 $ ./prepare-hostpath.sh 
 ```
 Changed hostPath /data/rocketmq/nameserver uid to 3000, gid to 3000
 Changed hostPath /data/rocketmq/broker uid to 3000, gid to 3000
 You may refer to the instructions in the script for more information.
-#### Prepare Storage Class of NFS
+#### Prepare Storage Class of NFS(also can be Ceph , GlusterFS)
 If you choose NFS as the storage mode, the first step is to prepare a storage class based on NFS provider to create PV and PVC where the RocketMQ data will be stored.
 
 1. Deploy NFS server and clients on your Kubernetes cluster.You can refer to [NFS deployment document](docs/nfs_install_en.md) for more details Please make sure they are functional before you go to the next step. Here is a instruction on how to verify NFS service.

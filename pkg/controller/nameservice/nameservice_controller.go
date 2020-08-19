@@ -288,7 +288,7 @@ func getJavaOpt(nameService *rocketmqv1beta1.NameService) string {
 
 func getVolumeClaimTemplates(nameService *rocketmqv1beta1.NameService) []corev1.PersistentVolumeClaim {
 	switch nameService.Spec.StorageMode {
-	case cons.StorageModeNFS:
+	case cons.StorageClass:
 		return nameService.Spec.VolumeClaimTemplates
 	case cons.StorageModeEmptyDir, cons.StorageModeHostPath:
 		fallthrough
@@ -299,7 +299,7 @@ func getVolumeClaimTemplates(nameService *rocketmqv1beta1.NameService) []corev1.
 
 func getVolumes(nameService *rocketmqv1beta1.NameService) []corev1.Volume {
 	switch nameService.Spec.StorageMode {
-	case cons.StorageModeNFS:
+	case cons.StorageClass:
 		return nil
 	case cons.StorageModeEmptyDir:
 		volumes := []corev1.Volume{{

@@ -18,9 +18,10 @@ spec:
   imagePullPolicy: Always
   # allowRestart defines whether allow pod restart
   allowRestart: true
-  # storageMode can be EmptyDir, HostPath, NFS
+  # storageMode can be EmptyDir, HostPath, NFS, Ceph
   #storageMode: HostPath
-  storageMode: NFS
+  #storageMode: NFS
+  storageMode: Ceph
   # hostPath is the local path to store data
   hostPath: /data/rocketmq/broker
   # set broker cluster name
@@ -55,9 +56,11 @@ spec:
     - metadata:
         name: broker-storage
         annotations:
-          volume.beta.kubernetes.io/storage-class: managed-nfs-storage
+          #volume.beta.kubernetes.io/storage-class: managed-nfs-storage
+          volume.beta.kubernetes.io/storage-class: csi-rbd-sc
       spec:
         accessModes: [ "ReadWriteOnce" ]
+        volumeMode: Filesystem
         resources:
           requests:
             storage: 15Gi

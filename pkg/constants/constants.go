@@ -58,14 +58,14 @@ const (
 	// BrokerHighAvailabilityContainerPortName is the high availability port name of broker container
 	BrokerHighAvailabilityContainerPortName = "ha"
 
-	// StorageModeNFS is the name of NFS storage mode
-	StorageModeNFS = "NFS"
-
 	// StorageModeEmptyDir is the name of EmptyDir storage mode
 	StorageModeEmptyDir = "EmptyDir"
 
 	// StorageModeHostPath is the name pf HostPath storage mode
 	StorageModeHostPath = "HostPath"
+
+	// StorageClass provides a way for administrators to describe the "classes" of storage they offer.
+	StorageClass = "StorageClass"
 
 	// RestartBrokerPodIntervalInSecond is restart broker pod interval in second
 	RestartBrokerPodIntervalInSecond = 30

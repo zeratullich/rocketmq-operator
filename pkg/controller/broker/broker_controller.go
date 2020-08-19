@@ -482,7 +482,7 @@ func getJavaOpt(broker *rocketmqv1beta1.Broker) string {
 
 func getVolumeClaimTemplates(broker *rocketmqv1beta1.Broker) []corev1.PersistentVolumeClaim {
 	switch broker.Spec.StorageMode {
-	case cons.StorageModeNFS:
+	case cons.StorageClass:
 		return broker.Spec.VolumeClaimTemplates
 	case cons.StorageModeEmptyDir, cons.StorageModeHostPath:
 		fallthrough
@@ -493,7 +493,7 @@ func getVolumeClaimTemplates(broker *rocketmqv1beta1.Broker) []corev1.Persistent
 
 func getVolumes(broker *rocketmqv1beta1.Broker) []corev1.Volume {
 	switch broker.Spec.StorageMode {
-	case cons.StorageModeNFS:
+	case cons.StorageClass:
 		return nil
 	case cons.StorageModeEmptyDir:
 		volumes := []corev1.Volume{{
