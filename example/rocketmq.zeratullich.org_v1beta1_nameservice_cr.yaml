@@ -11,7 +11,7 @@ spec:
   nameServiceImage: zeratullich/rocketmq-namesrv:4.5.2-alpine 
   # imagePullPolicy is the image pull policy
   imagePullPolicy: Always
-  # storageMode can be EmptyDir, HostPath, NFS
+  # storageMode can be EmptyDir, HostPath, storageClass
   storageMode: EmptyDir
   # hostPath is the local path to store data
   hostPath: /data/rocketmq/nameserver

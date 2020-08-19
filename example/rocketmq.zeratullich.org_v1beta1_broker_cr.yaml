@@ -18,10 +18,9 @@ spec:
   imagePullPolicy: Always
   # allowRestart defines whether allow pod restart
   allowRestart: true
-  # storageMode can be EmptyDir, HostPath, NFS, Ceph
+  # storageMode can be EmptyDir, HostPath, StorageClass
   #storageMode: HostPath
-  #storageMode: NFS
-  storageMode: Ceph
+  storageMode: StorageClass
   # hostPath is the local path to store data
   hostPath: /data/rocketmq/broker
   # set broker cluster name

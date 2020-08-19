@@ -639,7 +639,7 @@ spec:
               format: int32
               type: integer
             storageMode:
-              description: StorageMode can be EmptyDir, HostPath, NFS
+              description: StorageMode can be EmptyDir, HostPath, StorageClass
               type: string
             volumeClaimTemplates:
               description: VolumeClaimTemplates defines the StorageClass
